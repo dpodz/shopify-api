@@ -1,5 +1,5 @@
 require 'rails_helper'
 
-RSpec.describe ProductController, type: :controller do
+RSpec.describe ApplicationController, type: :controller do
 
 end
