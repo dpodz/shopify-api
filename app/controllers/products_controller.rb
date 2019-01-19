@@ -1,5 +1,5 @@
 class ProductsController < ApplicationController
-  before_action :set_product, only: [:show, :update, :destroy]
+  before_action :set_product, only: [:show, :update, :destroy, :purchase]
   
   # GET /products
   def index
@@ -18,12 +18,11 @@ class ProductsController < ApplicationController
   
   # POST /products/:id/purchase
   def purchase
-    @purchase_prod = Product.where("id = " + params[:id]).first
-    if @purchase_prod.inventory_count > 0
-      @purchase_prod.inventory_count -= 1
-      @purchase_prod.save
+    if @product && @product.inventory_count > 0
+      @product.inventory_count -= 1
+      @product.save
     end
-    json_response(@purchase_prod)
+    json_response(@product)
   end
 
   # Helpers

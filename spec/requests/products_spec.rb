@@ -9,7 +9,8 @@ RSpec.describe 'Store API', type: :request do
     create_list(:product, 9)
   end
   let(:product_id) { products.first.id }
-  let(:test_id) { Product.where( { title: "testprod2" } ).first.id }
+  let(:test_id1) { Product.where( { title: "testprod1" } ).first.id }
+  let(:test_id2) { Product.where( { title: "testprod2" } ).first.id }
 
   # Test suite for GET /products
   describe 'GET /products' do
@@ -90,73 +91,38 @@ RSpec.describe 'Store API', type: :request do
     #valid payload
     let(:valid_purchase) { { } }
     
+    # Purchasing a product without stock
     context 'when the request is valid' do
-      before { post "/products/#{test_id}/purchase", params: valid_purchase }
+      before { post "/products/#{test_id1}/purchase", params: valid_purchase }
+      
+      it 'returns the product' do
+        expect(json).not_to be_empty
+        expect(json['inventory_count']).to eq(0)
+      end
+    end
+    
+    # Purchasing a product with stock
+    context 'when the request is valid' do
+      before { post "/products/#{test_id2}/purchase", params: valid_purchase }
       
       it 'returns the product' do
         expect(json).not_to be_empty
         expect(json['inventory_count']).to eq(99)
       end
-      
     end
+    
+    context 'when the record does not exist' do
+      before { post "/products/9999/purchase", params: valid_purchase }
+
+      it 'returns status code 404' do
+        expect(response).to have_http_status(404)
+      end
+
+      it 'returns a not found message' do
+        expect(response.body).to match(/Couldn't find Product/)
+      end
+    end
+    
   end 
-
-=begin
-  # Test suite for POST /products
-  describe 'POST /products' do
-    # valid payload
-    let(:valid_attributes) { { title: 'Back Scratcher', price: '10.99', inventory_count: '69' } }
-
-    context 'when the request is valid' do
-      before { post '/products', params: valid_attributes }
-
-      it 'creates a product' do
-        expect(json['title']).to eq('Back Scratcher')
-      end
-
-      it 'returns status code 201' do
-        expect(response).to have_http_status(201)
-      end
-    end
-
-    context 'when the request is invalid' do
-      before { post '/products', params: { title: 'Foobar' } }
-
-      it 'returns status code 422' do
-        expect(response).to have_http_status(422)
-      end
-
-      it 'returns a validation failure message' do
-        expect(response.body)
-          .to match(/Validation failed: Price can't be blank/)
-      end
-    end
-  end
-
-  # Test suite for PUT /products/:id
-  describe 'PUT /products/:id' do
-    let(:valid_attributes) { { title: 'Plunger' } }
-
-    context 'when the record exists' do
-      before { put "/products/#{product_id}", params: valid_attributes }
-
-      it 'updates the record' do
-        expect(response.body).to be_empty
-      end
-
-      it 'returns status code 204' do
-        expect(response).to have_http_status(204)
-      end
-    end
-  end
-
-  # Test suite for DELETE /products/:id
-  describe 'DELETE /products/:id' do
-    before { delete "/products/#{product_id}" }
-
-    it 'returns status code 204' do
-      expect(response).to have_http_status(204)
-    end
-  end
-=end
+  
 end
