@@ -14,8 +14,21 @@ A simple server-side web API that can be used to drive an online shop.
 5. Start the server with `rails s`
 
 ### Example Usage
-1. Start up your HTTP client for testing (e.g. [httpie](https://httpie.org/))
+1. Start up your HTTP client (e.g. [httpie](https://httpie.org/))
 2. Ping the server in your browser or HTTP client at `localhost:3000`
-3. Sign up with `http :3000/signup name=test email=test@email.com password=foobar password_confirmation=foobar`
+3. Sign up with `http :3000/signup name=example email=example@email.com password=foobar password_confirmation=foobar`
 4. Copy your auth_token
 5. Make calls and attach your auth_token, for example: `http GET :3000/products Authorization:'abhajsbdjh123819'`
+
+### API Documentation
+You must be authenticated to use the API.
+You can get your authentication token by signing up at `:3000/signup name=example email=example@email.com password=foobar password_confirmation=foobar`
+Attached your auth_token to the end of your API request by appending ` Authorization:'auth_token'`
+
+| URI Base    | Request Type | URI Pattern              | URI Parameter Options | POST Parameters                                                                  | Example                                                                                           |
+|-------------|:------------:|--------------------------|-----------------------|----------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------|
+| `/products` | GET          | `/products/`             | onlyinstock=[0,1]     | n/a                                                                              | `http GET :3000/products` `http GET :3000/products?onlyinstock=1`                                 |
+| `/products` | GET          | `/products/:id`          |                       | n/a                                                                              | `http GET :3000/products/3`                                                                       |
+| `/products` | POST         | `/products/:id/purchase` |                       | {}                                                                               | `http POST :3000/products/3/purchase`                                                             |
+| `/signup`   | POST         | `/signup`                |                       | `{ name:string,  email:string,  password:string, password_confirmation:string }` | `http POST :3000/signup name=joe email=ex@email.com password=foobar password_confirmation=foobar` |
+| `/auth`     | POST         | `/auth/login`            |                       | `{  name:string,  password:string  }`                                            | `http POST :3000/auth/login name=joe password=foobar`                                             |
