@@ -3,33 +3,29 @@ class ProductsController < ApplicationController
   
   # GET /products
   def index
-    @products = Product.all
+    if params[:onlyinstock] == "1"
+      @products = Product.where("inventory_count > 0")
+    else
+      @products = Product.all
+    end
     json_response(@products)
   end
-  
-  # POST /products
-  def create
-    @product = Product.create!(product_params)
-    json_response(@product, :created)
-  end
-  
+
   # GET /products/:id
   def show
     json_response(@product)
   end
   
-  # PUT /products/:id
-  def update
-    @product.update(product_params)
-    head :no_content
+  # POST /products/:id/purchase
+  def purchase
+    @purchase_prod = Product.where("id = " + params[:id]).first
+    if @purchase_prod.inventory_count > 0
+      @purchase_prod.inventory_count -= 1
+      @purchase_prod.save
+    end
+    json_response(@purchase_prod)
   end
-  
-  # DELETE /products/:id
-  def destroy
-    @product.destroy
-    head :no_content
-  end
-  
+
   # Helpers
   private
   

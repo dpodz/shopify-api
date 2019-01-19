@@ -1,15 +1,51 @@
 require 'rails_helper'
 
+# This is essentially the test suite for products
 RSpec.describe 'Store API', type: :request do
   # initialize test data 
-  let!(:products) { create_list(:product, 10) }
+  let!(:products) do
+    Product.where( { title: "testprod1", price: 10.99, inventory_count: 0 } ).first_or_create
+    Product.where( { title: "testprod2", price: 10.99, inventory_count: 100 } ).first_or_create
+    create_list(:product, 9)
+  end
   let(:product_id) { products.first.id }
+  let(:test_id) { Product.where( { title: "testprod2" } ).first.id }
 
   # Test suite for GET /products
   describe 'GET /products' do
     # make HTTP get request before each example
     before { get '/products' }
 
+    it 'returns products' do
+      # Note `json` is a custom helper to parse JSON responses
+      expect(json).not_to be_empty
+      expect(json.size).to eq(11)
+    end
+
+    it 'returns status code 200' do
+      expect(response).to have_http_status(200)
+    end
+  end
+  
+  # Test suite for GET /products?onlyinstock=0
+  describe 'GET /products?onlyinstock=0' do
+    before { get "/products?onlyinstock=0" }
+    
+    it 'returns products' do
+      # Note `json` is a custom helper to parse JSON responses
+      expect(json).not_to be_empty
+      expect(json.size).to eq(11)
+    end
+
+    it 'returns status code 200' do
+      expect(response).to have_http_status(200)
+    end
+  end
+  
+  # Test suite for GET /products?onlyinstock=1
+  describe 'GET /products?onlyinstock=1' do
+    before { get "/products?onlyinstock=1" }
+    
     it 'returns products' do
       # Note `json` is a custom helper to parse JSON responses
       expect(json).not_to be_empty
@@ -20,7 +56,7 @@ RSpec.describe 'Store API', type: :request do
       expect(response).to have_http_status(200)
     end
   end
-
+    
   # Test suite for GET /products/:id
   describe 'GET /products/:id' do
     before { get "/products/#{product_id}" }
@@ -48,7 +84,24 @@ RSpec.describe 'Store API', type: :request do
       end
     end
   end
+  
+  # Test suite for POST /products/:id/purchase
+  describe 'POST /products/:id/purchase' do
+    #valid payload
+    let(:valid_purchase) { { } }
+    
+    context 'when the request is valid' do
+      before { post "/products/#{test_id}/purchase", params: valid_purchase }
+      
+      it 'returns the product' do
+        expect(json).not_to be_empty
+        expect(json['inventory_count']).to eq(99)
+      end
+      
+    end
+  end 
 
+=begin
   # Test suite for POST /products
   describe 'POST /products' do
     # valid payload
@@ -105,4 +158,5 @@ RSpec.describe 'Store API', type: :request do
       expect(response).to have_http_status(204)
     end
   end
+=end
 end

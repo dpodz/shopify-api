@@ -3,7 +3,7 @@ class CreateProducts < ActiveRecord::Migration[5.2]
     create_table :products do |t|
       t.string :title
       t.decimal :price
-      t.integer :inventory_count
+      t.integer :inventory_count, unsigned: true
 
       t.timestamps
     end
