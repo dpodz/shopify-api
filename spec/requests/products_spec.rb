@@ -3,6 +3,7 @@ require 'rails_helper'
 # This is essentially the test suite for products
 RSpec.describe 'Store API', type: :request do
   # initialize test data 
+  let(:user) { create(:user) }
   let!(:products) do
     Product.where( { title: "testprod1", price: 10.99, inventory_count: 0 } ).first_or_create
     Product.where( { title: "testprod2", price: 10.99, inventory_count: 100 } ).first_or_create
@@ -11,11 +12,14 @@ RSpec.describe 'Store API', type: :request do
   let(:product_id) { products.first.id }
   let(:test_id1) { Product.where( { title: "testprod1" } ).first.id }
   let(:test_id2) { Product.where( { title: "testprod2" } ).first.id }
+  
+  #authorize request
+  let(:headers) { valid_headers }
 
   # Test suite for GET /products
   describe 'GET /products' do
     # make HTTP get request before each example
-    before { get '/products' }
+    before { get '/products', headers: headers }
 
     it 'returns products' do
       # Note `json` is a custom helper to parse JSON responses
@@ -30,7 +34,7 @@ RSpec.describe 'Store API', type: :request do
   
   # Test suite for GET /products?onlyinstock=0
   describe 'GET /products?onlyinstock=0' do
-    before { get "/products?onlyinstock=0" }
+    before { get "/products?onlyinstock=0", headers: headers }
     
     it 'returns products' do
       # Note `json` is a custom helper to parse JSON responses
@@ -45,7 +49,7 @@ RSpec.describe 'Store API', type: :request do
   
   # Test suite for GET /products?onlyinstock=1
   describe 'GET /products?onlyinstock=1' do
-    before { get "/products?onlyinstock=1" }
+    before { get "/products?onlyinstock=1", headers: headers }
     
     it 'returns products' do
       # Note `json` is a custom helper to parse JSON responses
@@ -60,7 +64,7 @@ RSpec.describe 'Store API', type: :request do
     
   # Test suite for GET /products/:id
   describe 'GET /products/:id' do
-    before { get "/products/#{product_id}" }
+    before { get "/products/#{product_id}", headers: headers }
 
     context 'when the record exists' do
       it 'returns the product' do
@@ -93,7 +97,7 @@ RSpec.describe 'Store API', type: :request do
     
     # Purchasing a product without stock
     context 'when the request is valid' do
-      before { post "/products/#{test_id1}/purchase", params: valid_purchase }
+      before { post "/products/#{test_id1}/purchase", params: valid_purchase, headers: headers }
       
       it 'returns the product' do
         expect(json).not_to be_empty
@@ -103,7 +107,7 @@ RSpec.describe 'Store API', type: :request do
     
     # Purchasing a product with stock
     context 'when the request is valid' do
-      before { post "/products/#{test_id2}/purchase", params: valid_purchase }
+      before { post "/products/#{test_id2}/purchase", params: valid_purchase, headers: headers }
       
       it 'returns the product' do
         expect(json).not_to be_empty
@@ -112,7 +116,7 @@ RSpec.describe 'Store API', type: :request do
     end
     
     context 'when the record does not exist' do
-      before { post "/products/9999/purchase", params: valid_purchase }
+      before { post "/products/9999/purchase", params: valid_purchase, headers: headers }
 
       it 'returns status code 404' do
         expect(response).to have_http_status(404)
