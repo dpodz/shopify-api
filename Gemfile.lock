@@ -64,6 +64,7 @@ GEM
       activesupport (>= 4.2.0)
     i18n (1.5.2)
       concurrent-ruby (~> 1.0)
+    jwt (2.1.0)
     loofah (2.2.3)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
@@ -156,6 +157,7 @@ DEPENDENCIES
   database_cleaner
   factory_bot_rails (~> 4.0)
   faker
+  jwt
   puma (~> 3.11)
   rails (~> 5.2.2)
   rspec-rails (~> 3.5)
