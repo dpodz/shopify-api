@@ -90,24 +90,26 @@ RSpec.describe 'Store API', type: :request do
     end
   end
   
-  # Test suite for POST /products/:id/purchase
-  describe 'POST /products/:id/purchase' do
-    #valid payload
-    let(:valid_purchase) { { } }
+  # Test suite for POST /products/purchase
+  describe 'POST /products/purchase' do
+    #test payloads
+    let(:test1_purchase) { { id: test_id1.to_s}.to_json }
+    let(:test2_purchase) { { id: test_id2.to_s }.to_json }
+    let(:invalid_purchase) { { id: '9999' }.to_json }
     
     # Purchasing a product without stock
     context 'when the request is valid' do
-      before { post "/products/#{test_id1}/purchase", params: valid_purchase, headers: headers }
+      before { post "/products/purchase", params: test1_purchase, headers: headers }
       
       it 'returns the product' do
         expect(json).not_to be_empty
         expect(json['inventory_count']).to eq(0)
       end
     end
-    
+
     # Purchasing a product with stock
     context 'when the request is valid' do
-      before { post "/products/#{test_id2}/purchase", params: valid_purchase, headers: headers }
+      before { post "/products/purchase", params: test2_purchase, headers: headers }
       
       it 'returns the product' do
         expect(json).not_to be_empty
@@ -116,7 +118,7 @@ RSpec.describe 'Store API', type: :request do
     end
     
     context 'when the record does not exist' do
-      before { post "/products/9999/purchase", params: valid_purchase, headers: headers }
+      before { post "/products/purchase", params: invalid_purchase, headers: headers }
 
       it 'returns status code 404' do
         expect(response).to have_http_status(404)
@@ -126,7 +128,7 @@ RSpec.describe 'Store API', type: :request do
         expect(response.body).to match(/Couldn't find Product/)
       end
     end
-    
+
   end 
   
 end

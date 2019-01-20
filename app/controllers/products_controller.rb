@@ -1,5 +1,5 @@
 class ProductsController < ApplicationController
-  before_action :set_product, only: [:show, :update, :destroy, :purchase]
+  before_action :set_product, only: [:show, :update, :destroy]
   
   # GET /products
   def index
@@ -16,8 +16,9 @@ class ProductsController < ApplicationController
     json_response(@product)
   end
   
-  # POST /products/:id/purchase
+  # POST /products/purchase
   def purchase
+    @product = Product.find(params[:id])
     if @product && @product.inventory_count > 0
       @product.inventory_count -= 1
       @product.save
@@ -30,7 +31,7 @@ class ProductsController < ApplicationController
   
   def product_params
     # whitelist params
-    params.permit(:title, :price, :inventory_count)
+    params.permit(:title, :price, :inventory_count, :id)
   end
   
   def set_product
