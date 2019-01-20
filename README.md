@@ -9,9 +9,11 @@ A simple server-side web API that can be used to drive an online shop.
 ### Setup
 1. Clone the repository and navigate to it
 2. Run `bundle install` to install gems and dependencies
-3. Run `rails db:migrate` to initialize the database
-4. Run `bundle exec rspec` to run tests, ensuring that everything is setup correctly
-5. Start the server with `rails s`
+3. Run `rails db:migrate` and `rails db:test:prepare` to initialize the database
+4. Delete the file `config/credentials.yml.enc`
+5. Regenerate credentials with `EDITOR=vim rails credentials:edit`
+6. Run `bundle exec rspec` to run tests to ensure everything is set up
+7. Start the server with `rails s`
 
 ### Example Usage
 1. Start up your HTTP client (e.g. [httpie](https://httpie.org/))
@@ -22,14 +24,16 @@ A simple server-side web API that can be used to drive an online shop.
 
 ### API Documentation
 You must be authenticated to use the API.
+
 You can get your authentication token by signing up at `:3000/signup name=example email=example@email.com password=foobar password_confirmation=foobar`
-Attached your auth_token to the end of your API request by appending ` Authorization:'auth_token'`
+
+Attach your auth_token to the end of your API request by appending ` Authorization:'auth_token'`
 
 | URI Base    | Request Type | URI Pattern          | Description                                     | URI Parameter Options | POST Parameters                                                                  | Example                                                                                           |
 |-------------|:------------:|----------------------|-------------------------------------------------|-----------------------|----------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------|
-| `/products` | GET          | `/products/`         | Retrieve a Json object of all products          | onlyinstock=[0,1]     | n/a                                                                              | `http GET :3000/products` `http GET :3000/products?onlyinstock=1`                                 |
-| `/products` | GET          | `/products/:id`      | Retrieve a Json object of product with given id |                       | n/a                                                                              | `http GET :3000/products/3`                                                                       |
+| `/products` | GET          | `/products/`         | Retrieve a JSON object of all products          | onlyinstock=[0,1]     | n/a                                                                              | `http GET :3000/products` `http GET :3000/products?onlyinstock=1`                                 |
+| `/products` | GET          | `/products/:id`      | Retrieve a JSON object of product with given id |                       | n/a                                                                              | `http GET :3000/products/3`                                                                       |
 | `/products` | POST         | `/products/purchase` | "Purchase" product with given id                |                       | `{id:int}`                                                                       | `http POST :3000/products/purchase id=3`                                                          |
-| `/signup`   | POST         | `/signup`            |                                                 |                       | `{ name:string,  email:string,  password:string, password_confirmation:string }` | `http POST :3000/signup name=joe email=ex@email.com password=foobar password_confirmation=foobar` |
-| `/auth`     | POST         | `/auth/login`        |                                                 |                       | `{  name:string,  password:string  }`                                            | `http POST :3000/auth/login name=joe password=foobar`                                             |
+| `/signup`   | POST         | `/signup`            | Make an account                                 |                       | `{ name:string,  email:string,  password:string, password_confirmation:string }` | `http POST :3000/signup name=joe email=ex@email.com password=foobar password_confirmation=foobar` |
+| `/auth`     | POST         | `/auth/login`        | Login with an existing account                  |                       | `{  name:string,  password:string  }`                                            | `http POST :3000/auth/login name=joe password=foobar`                                             |
 
