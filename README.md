@@ -13,7 +13,7 @@ A simple server-side web API that can be used to drive an online shop.
 4. Delete the file `config/credentials.yml.enc`
 5. Regenerate credentials with `EDITOR=vim rails credentials:edit`
 6. Run `bundle exec rspec` to run tests to ensure everything is set up
-7. Load test data with `bundle exec load_test_data:products`
+7. Load test data with `bundle exec rake load_test_data:products`
 8. Start the server with `rails s`
 
 ### Example Usage
@@ -22,7 +22,7 @@ A simple server-side web API that can be used to drive an online shop.
 3. Ping the server in your browser or HTTP client at `localhost:3000`
 4. Sign up with `http :3000/signup name=example email=example@email.com password=foobar password_confirmation=foobar`
 5. Copy your auth_token
-6. Make calls and attach your auth_token, for example: `http GET :3000/products Authorization:'abhajsbdjh123819'`
+6. Make calls and attach your auth_token, for example: `http GET :3000/products Authorization:"abhajsbdjh123819"`
 
 ### API Documentation
 You must be authenticated to use the API.
@@ -38,4 +38,3 @@ Attach your auth_token to the end of your API request by appending ` Authorizati
 | `/products` | POST         | `/products/purchase` | "Purchase" product with given id                |                       | `{id:int}`                                                                       | `http POST :3000/products/purchase id=3`                                                          |
 | `/signup`   | POST         | `/signup`            | Make an account                                 |                       | `{ name:string,  email:string,  password:string, password_confirmation:string }` | `http POST :3000/signup name=joe email=ex@email.com password=foobar password_confirmation=foobar` |
 | `/auth`     | POST         | `/auth/login`        | Login with an existing account                  |                       | `{  name:string,  password:string  }`                                            | `http POST :3000/auth/login name=joe password=foobar`                                             |
-
