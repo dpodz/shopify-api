@@ -17,11 +17,12 @@ A simple server-side web API that can be used to drive an online shop.
 8. Start the server with `rails s`
 
 ### Example Usage
-1. Start up your HTTP client (e.g. [httpie](https://httpie.org/))
-2. Ping the server in your browser or HTTP client at `localhost:3000`
-3. Sign up with `http :3000/signup name=example email=example@email.com password=foobar password_confirmation=foobar`
-4. Copy your auth_token
-5. Make calls and attach your auth_token, for example: `http GET :3000/products Authorization:'abhajsbdjh123819'`
+1. Start up server by running `rails s` in home directory
+2. Start up your HTTP client (e.g. [httpie](https://httpie.org/))
+3. Ping the server in your browser or HTTP client at `localhost:3000`
+4. Sign up with `http :3000/signup name=example email=example@email.com password=foobar password_confirmation=foobar`
+5. Copy your auth_token
+6. Make calls and attach your auth_token, for example: `http GET :3000/products Authorization:'abhajsbdjh123819'`
 
 ### API Documentation
 You must be authenticated to use the API.
