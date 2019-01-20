@@ -13,7 +13,8 @@ A simple server-side web API that can be used to drive an online shop.
 4. Delete the file `config/credentials.yml.enc`
 5. Regenerate credentials with `EDITOR=vim rails credentials:edit`
 6. Run `bundle exec rspec` to run tests to ensure everything is set up
-7. Start the server with `rails s`
+7. Load test data with `bundle exec load_test_data:products`
+8. Start the server with `rails s`
 
 ### Example Usage
 1. Start up your HTTP client (e.g. [httpie](https://httpie.org/))
