@@ -27,7 +27,7 @@ You must be authenticated to use the API.
 
 You can get your authentication token by signing up at `:3000/signup name=example email=example@email.com password=foobar password_confirmation=foobar`
 
-Attach your auth_token to the end of your API request by appending ` Authorization:'auth_token'`
+Attach your auth_token to the end of your API request by appending ` Authorization:"auth_token"`
 
 | URI Base    | Request Type | URI Pattern          | Description                                     | URI Parameter Options | POST Parameters                                                                  | Example                                                                                           |
 |-------------|:------------:|----------------------|-------------------------------------------------|-----------------------|----------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------|
